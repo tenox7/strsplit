@@ -7,16 +7,22 @@
 // Warning this function modifies src!
 // Written by Tomasz Nowak
 //
-int strsplit(char *src, char ***dst, char *sep) {
+int strsplit(char *inp, char ***dst, char *sep) {
     char **arr;
+    char *src;
+    char *src_org;
+    char *c;
+    int n;
+    
     char defsep[]=" \t\n\r\f";
 
     if(!sep)
         sep=defsep;
 
-    char *src_org = src;
-    char *c;
-    int n = 0;
+    src=calloc((strlen(inp) + 1), sizeof(char));
+    strcpy(src, inp);
+    src_org = src;
+    n = 0;
 
     while (c = strpbrk(src, sep))
     {
@@ -57,18 +63,19 @@ int strsplit(char *src, char ***dst, char *sep) {
     arr[n] = src;
 
     *dst = arr;
-    return nelem;
+
+    if(!*arr[n])
+        return nelem-1;
+    else
+        return nelem;
 }
 
 int main(int argc, char **argv) {
     char **arr;
     int len, n;
-    char tmp[256]={0};
 
     // example 1 - default separator
-    strcpy(tmp, "The quick       brown\tfox\t\t\t\tjumps\t \t \t \t \t over\r\nthe\n\n\n\nlazy\fdog\f \f\f");
-
-    len = strsplit(tmp, &arr, 0);
+    len = strsplit("The quick       brown\tfox\t\t\t\tjumps\t \t \t \t \t over\r\nthe\n\n\n\nlazy\fdog\f \f\f", &arr, 0);
 
     for (n = 0; n<len; n++)
         printf("%s\n", arr[n]);
@@ -76,9 +83,31 @@ int main(int argc, char **argv) {
     free(arr);
 
     // example 2 - custom separators
-    strcpy(tmp, "/var/lib///my/./broken/.../app/././././path///");
+    len = strsplit("/var/lib///my/./broken/.../app/././././path///", &arr, "/.");
 
-    len = strsplit(tmp, &arr, "/.");
+    for (n = 0; n<len; n++)
+        printf("%s\n", arr[n]);
+
+    free(arr);
+
+    // test - only separators
+    len = strsplit("\r\n\t\f", &arr, 0);
+
+    for (n = 0; n<len; n++)
+        printf("%s\n", arr[n]);
+
+    free(arr);
+
+    // test - no separators
+    len = strsplit("foo", &arr, 0);
+
+    for (n = 0; n<len; n++)
+        printf("%s\n", arr[n]);
+
+    free(arr);
+
+    // test - empty string
+    len = strsplit("", &arr, 0);
 
     for (n = 0; n<len; n++)
         printf("%s\n", arr[n]);
