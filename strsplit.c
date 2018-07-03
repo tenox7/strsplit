@@ -24,14 +24,14 @@ int strsplit(char *inp, char ***dst, char *sep) {
     src_org = src;
     n = 0;
 
-    while (c = strpbrk(src, sep))
-    {
-        while (c == src)
-        {
+    while (c = strpbrk(src, sep)) {
+        while (c == src) {
             src++;
             c = strpbrk(src, sep);
         }
-        if (c == NULL) break;
+
+        if (c == NULL) 
+            break;
 
         src = c + 1;
         n++;
@@ -44,14 +44,14 @@ int strsplit(char *inp, char ***dst, char *sep) {
     src = src_org;
     n = 0;
 
-    while (c = strpbrk(src, sep))
-    {
-        while (c == src)
-        {
+    while (c = strpbrk(src, sep)) {
+        while (c == src) {
             src++;
             c = strpbrk(src, sep);
         }
-        if (c == NULL) break;
+        
+        if (c == NULL) 
+            break;
 
         *c = 0;
         arr[n] = src;
